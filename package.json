@@ -1,0 +1,19 @@
+{
+  "name": "devcamper-api",
+  "version": "1.0.0",
+  "description": "The DevCamper API project from Brad Traversy's Node.js API Masterclass with Express and MongoDB course on O'Reilly.",
+  "author": "agent-indigo",
+  "license": "MIT",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server",
+    "prod": "MODE=production nodemon server"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
