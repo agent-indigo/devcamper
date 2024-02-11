@@ -7,6 +7,7 @@ exports.getBootcamps = async (request, response, next) => {
         const bootcamps = await Bootcamp.find()
         response.status(200).json({
             success: true,
+            count: bootcamps.length,
             data: bootcamps
         })
     } catch(error) {
