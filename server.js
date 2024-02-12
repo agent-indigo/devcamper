@@ -14,16 +14,20 @@ ConnectToMongoDB()
 const app = express()
 // body parser
 app.use(express.json())
+// environment variables
+const DEBUG = process.env.DEBUG || 'false'
+const PORT = process.env.PORT || 5000
 // development logger: "Morgan"
-if(process.env.MODE === 'development') app.use(morgan('dev'))
+if(DEBUG !== 'false') app.use(morgan('dev'))
 // mount routers
 app.use('/api/v1/bootcamps', bootcamps)
 // error handler
 app.use(ErrorHandler)
-// specify port
-const PORT = process.env.PORT || 5000
 // start server
-const server = app.listen(PORT, console.log(`Server running in ${process.env.MODE} mode on localhost:${PORT}.`))
+const server = app.listen(PORT, () => {
+    console.log(`Server running on localhost:${PORT}.`)
+    if(DEBUG !== 'false') console.log('Debug mode enabled.')
+})
 // handle promise rejections
 process.on('unhandledRejection', (error, promise) => {
     console.error(`Error: ${error.message}`)
