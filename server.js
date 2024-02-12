@@ -3,6 +3,7 @@ const express = require('express')
 const dotenv = require('dotenv')
 const morgan = require('morgan')
 const ConnectToMongoDB = require('./config/ConnectToMongoDB')
+const ErrorHandler = require('./middleware/ErrorHandler')
 // route files
 const bootcamps = require('./routes/bootcamps')
 // load environment variables
@@ -17,6 +18,8 @@ app.use(express.json())
 if(process.env.MODE === 'development') app.use(morgan('dev'))
 // mount routers
 app.use('/api/v1/bootcamps', bootcamps)
+// error handler
+app.use(ErrorHandler)
 // specify port
 const PORT = process.env.PORT || 5000
 // start server
