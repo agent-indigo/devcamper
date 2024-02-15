@@ -4,3 +4,5 @@ node_modules/
 config/
 # mock data
 _data/
+# uploads directory
+public/
