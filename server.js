@@ -1,11 +1,14 @@
 // imports
+const path = require('path')
 const express = require('express')
+const fileUpload = require('express-fileupload')
 const dotenv = require('dotenv')
 const morgan = require('morgan')
 const ConnectToMongoDB = require('./config/ConnectToMongoDB')
 const ErrorHandler = require('./middleware/ErrorHandler')
 // route files
 const bootcamps = require('./routes/bootcamps')
+const courses = require('./routes/courses')
 // load environment variables
 dotenv.config({ path: './config/config.env' })
 // connect to MongoDB
@@ -19,8 +22,13 @@ const DEBUG = process.env.DEBUG || 'false'
 const PORT = process.env.PORT || 5000
 // development logger: "Morgan"
 if(DEBUG !== 'false') app.use(morgan('dev'))
+// file uploading
+app.use(fileUpload())
+// set static folder
+app.use(express.static(path.join(__dirname, 'public')))
 // mount routers
 app.use('/api/v1/bootcamps', bootcamps)
+app.use('/api/v1/courses', courses)
 // error handler
 app.use(ErrorHandler)
 // start server
