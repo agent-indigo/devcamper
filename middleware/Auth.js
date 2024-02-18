@@ -10,7 +10,7 @@ exports.protect = AsyncHandler(async (request, response, next) => {
     // else if(request.cookies.token) {
     //     token = request.cookies.token
     // }
-    // ensure token was exists
+    // ensure token exists
     if(!token) return next(ErrorResponse('Unauthorized.', 401))
     try {
         // verify token

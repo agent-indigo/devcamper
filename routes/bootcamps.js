@@ -1,11 +1,11 @@
 // imports
 const express = require('express')
 const {
-    getBootcamps,
-    getBootcamp,
-    // getBootcampsWithinRadius,
+    showBootcamps,
+    showBootcamp,
+    // showBootcampsWithinRadius,
     addBootcamp,
-    updateBootcamp,
+    editBootcamp,
     deleteBootcamp,
     bootcampPhotoUpload
 } = require('../controllers/bootcamps')
@@ -18,8 +18,8 @@ const router = express.Router()
 // reroute to other routers
 router.use('/:bootcampId/courses', courseRouter)
 // methods
-router.route('/').get(AdvancedResults(Bootcamp, 'courses'), getBootcamps).post(protect, authorize('admin', 'publisher'), addBootcamp)
-// router.route('/radius/:zip/:distance').get(getBootcampsWihinRadius)
-router.route('/:id').get(getBootcamp).patch(protect, authorize('admin', 'publisher'), updateBootcamp).delete(protect, authorize('admin', 'publisher'), deleteBootcamp)
+router.route('/').get(AdvancedResults(Bootcamp, 'courses'), showBootcamps).post(protect, authorize('admin', 'publisher'), addBootcamp)
+// router.route('/radius/:zip/:distance').get(showBootcampsWihinRadius)
+router.route('/:id').get(showBootcamp).patch(protect, authorize('admin', 'publisher'), editBootcamp).delete(protect, authorize('admin', 'publisher'), deleteBootcamp)
 router.route('/:id/photo').put(protect, authorize('admin', 'publisher'), bootcampPhotoUpload)
 module.exports = router
