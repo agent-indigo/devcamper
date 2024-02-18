@@ -1,7 +1,7 @@
 # dependencies
 node_modules/
-# config
-config/
+# environment variables
+**/*.env
 # mock data
 _data/
 # uploads directory
