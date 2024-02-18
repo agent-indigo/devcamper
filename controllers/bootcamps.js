@@ -5,18 +5,18 @@ const ErrorResponse = require('../utilities/ErrorResponse')
 const path = require('path')
 // const GeoCoder = require('../utilities/GeoCoder')
 // methods
-// @name    getBootcamps
-// @desc    Display all forthcoming bootcamps
+// @name    showBootcamps
+// @desc    Show all forthcoming bootcamps
 // @route   GET /api/v1/bootcamps
 // @access  Public
-exports.getBootcamps = AsyncHandler(async(request, response, next) => {
+exports.showBootcamps = AsyncHandler(async(request, response, next) => {
     response.status(200).json(response.AdvancedResults)
 })
-// @name    getBootcampsWithinRadius
-// @desc    Display bootcamps within a radius
+// @name    showBootcampsWithinRadius
+// @desc    Show bootcamps within a radius
 // @route   GET /api/v1/bootcamps/:zip/:distance
 // @access  Private
-// exports.getBootcampsWihinRadius = AsyncHandler(async (request, response, next) => {
+// exports.showBootcampsWihinRadius = AsyncHandler(async (request, response, next) => {
 //     const { zip, distance } = request.params
 //     // get coordinates
 //     const location = await GeoCoder.geocode(zip)
@@ -44,11 +44,11 @@ exports.getBootcamps = AsyncHandler(async(request, response, next) => {
 //         data: bootcamps
 //     })
 // })
-// @name    getBootcamp
-// @desc    Display a single bootcamp
+// @name    showBootcamp
+// @desc    Show a single bootcamp
 // @route   GET /api/v1/bootcamps/:id
 // access   Public
-exports.getBootcamp = AsyncHandler(async(request, response, next) => {
+exports.showBootcamp = AsyncHandler(async(request, response, next) => {
     const bootcamp = await Bootcamp.findById(request.params.id)
     if(!bootcamp) return next(ErrorResponse(`Bootcamp with ID of ${request.params.id} not found.`, 404))
     response.status(200).json({
@@ -61,6 +61,12 @@ exports.getBootcamp = AsyncHandler(async(request, response, next) => {
 // @route   POST /api/v1/bootcamps
 // access   Private
 exports.addBootcamp = AsyncHandler(async(request, response, next) => {
+    // add user to body
+    request.body.user = request.user.id
+    // check for published bootcamp
+    const publishedBootcamp = await Bootcamp.findOne({ user: request.user.id })
+    // non-admin users can only add one bootcamp
+    if(publishedBootcamp && request.user.role !== 'admin') return next(ErrorResponse('You have already published a bootcamp.', 400))
     const bootcamp = await Bootcamp.create(request.body)
     response.status(201).json({
         success: true,
@@ -68,11 +74,13 @@ exports.addBootcamp = AsyncHandler(async(request, response, next) => {
     })
 })
 // @name    Upload photo for bootcamp
-// @route   PUT /api/v1/bootcamps/:id/photo
+// @route   PATCH /api/v1/bootcamps/:id/photo
 // @acces   Private
 exports.bootcampPhotoUpload = AsyncHandler(async(request, response, next) => {
     const bootcamp = await Bootcamp.findById(request.params.id)
     if(!bootcamp) return next(ErrorResponse(`Bootcamp with ID of ${request.params.id} not found`, 404))
+    // verify that user is bootcamp owner
+    if(bootcamp.user.toString() !== request.user.id && request.user.role !== 'admin') return next(ErrorResponse('Not authorized.', 401))
     if(!request.files) return next(ErrorResponse(`Please upload a photo.`, 400))
     const file = request.files.file
     // validate that the uploaded file is a photo
@@ -93,16 +101,19 @@ exports.bootcampPhotoUpload = AsyncHandler(async(request, response, next) => {
         })
     })
 })
-// @name    updateBootcamp
-// @desc    Update a bootcamp
+// @name    editBootcamp
+// @desc    Edit a bootcamp
 // @route   PATCH /api/v1/bootcamps/:id
 // access   Private
-exports.updateBootcamp = AsyncHandler(async(request, response, next) => {
-    const bootcamp = await Bootcamp.findByIdAndUpdate(request.params.id, request.body, {
+exports.editBootcamp = AsyncHandler(async(request, response, next) => {
+    let bootcamp = await Bootcamp.findById(request.params.id)
+    if(!bootcamp) return next(ErrorResponse(`Bootcamp with ID of ${request.params.id} not found.`, 404))
+    // verify that user is bootcamp owner
+    if(bootcamp.user.toString() !== request.user.id && request.user.role !== 'admin') return next(ErrorResponse('Not authorized.', 401))
+    bootcamp = await Bootcamp.findByIdAndUpdate(request.params.id, request.body, {
         new: true,
         runValidators: true
     })
-    if(!bootcamp) return next(ErrorResponse(`Bootcamp with ID of ${request.params.id} not found.`, 404))
     response.status(200).json({
         success: true,
         data: bootcamp
@@ -115,6 +126,8 @@ exports.updateBootcamp = AsyncHandler(async(request, response, next) => {
 exports.deleteBootcamp = AsyncHandler(async(request, response, next) => {
     const bootcamp = await Bootcamp.findById(request.params.id)
     if(!bootcamp) return next(ErrorResponse(`Bootcamp with ID of ${request.params.id} not found.`, 404))
+    // verify that user is bootcamp owner
+    if(bootcamp.user.toString() !== request.user.id && request.user.role !== 'admin') return next(ErrorResponse('Not authorized.', 401))
     await bootcamp.remove()
     response.status(200).json({ success: true })
 })
