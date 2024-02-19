@@ -34,6 +34,17 @@ exports.login = AsyncHandler(async (request, response, next) => {
     if(isValid === false) return next(ErrorResponse('Invalid credentials.', 401))
     sendTokenResponse(user, 200, response)
 })
+// @name    logout
+// @desc    Log out the current user
+// @route   GET /api/v1/auth/logout
+// @access  Private
+exports.logout = AsyncHandler(async (request, response, next) => {
+    response.cookie('token', 'none', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    })
+    response.status(200).json({ success: true })
+})
 // @name    getMe
 // @desc    Get current logged in user
 // @route   POST /api/v1/auth/me
