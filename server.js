@@ -1,9 +1,15 @@
 // imports
 const path = require('path')
 const express = require('express')
-const fileUpload = require('express-fileupload')
+const FileUpload = require('express-fileupload')
 const dotenv = require('dotenv')
 const morgan = require('morgan')
+const helmet = require ('helmet')
+const XSSclean = require('xss-clean')
+const HPPguard = require('hpp')
+const CORS = require('cors')
+const RateLimiter = require('express-rate-limit')
+const MongoSanitize = require('express-mongo-sanitize')
 const CookieParser = require('cookie-parser')
 const ConnectToMongoDB = require('./config/ConnectToMongoDB')
 const ErrorHandler = require('./middleware/ErrorHandler')
@@ -29,7 +35,23 @@ const PORT = process.env.PORT || 5000
 // development logger: "Morgan"
 if(DEBUG !== 'false') app.use(morgan('dev'))
 // file uploading
-app.use(fileUpload())
+app.use(FileUpload())
+// sanitize data
+app.use(MongoSanitize())
+// set security headers
+app.use(helmet())
+// prevent XSS attacks
+app.use(XSSclean())
+// prevent HTTP pollution
+app.use(HPPguard())
+// set ten minute rate limit
+const rateLimit = RateLimiter({
+    windowMs: 10 * 60 * 1000,
+    max: 100
+})
+app.use(rateLimit)
+// enable CORS
+app.use(CORS())
 // set static folder
 app.use(express.static(path.join(__dirname, 'public')))
 // mount routers

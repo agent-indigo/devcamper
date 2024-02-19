@@ -5,11 +5,13 @@ const User = require('../models/User')
 exports.protect = AsyncHandler(async (request, response, next) => {
     let token
     if(request.headers.authorization && request.headers.authorization.startsWith('Bearer')) {
+        // set token from bearer token in header
         token = request.headers.authorization.split(' ')[1]
     }
-    // else if(request.cookies.token) {
-    //     token = request.cookies.token
-    // }
+    else if(request.cookies.token) {
+        // set token from cookie
+        token = request.cookies.token
+    }
     // ensure token exists
     if(!token) return next(ErrorResponse('Unauthorized.', 401))
     try {

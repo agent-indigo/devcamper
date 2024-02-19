@@ -2,6 +2,7 @@ const express = require('express')
 const {
     register,
     login,
+    logout,
     getMe,
     forgotPassword,
     resetPassword,
@@ -11,6 +12,7 @@ const {
 const router = express.Router()
 const { protect } = require('../middleware/Auth')
 router.post('/login', login)
+router.get('/logout', logout)
 router.post('/me', protect, getMe)
 router.post('/register', register)
 router.patch('/editUser', protect, editUser)
