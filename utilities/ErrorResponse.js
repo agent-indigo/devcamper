@@ -1,7 +1,7 @@
-const ErrorResponse = new class ErrorResponse extends Error {
+const ErrorResponse = class ErrorResponse extends Error {
     constructor(message, statusCode) {
         super(message)
         this.statusCode = statusCode
     }
 }
-module.exports = ErrorResponse
+module.exports = new ErrorResponse
