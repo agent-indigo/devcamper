@@ -31,7 +31,7 @@ exports.addUser = AsyncHandler(async (request, response, next) => {
 })
 // @name    editUser
 // @desc    Edit a user
-// @route   PATCH /api/v1/users/:id
+// @route   PUT /api/v1/users/:id
 // @access  Private/Admin
 exports.editUser = AsyncHandler(async (request, response, next) => {
     const user = await User.findByIdAndUpdate(request.params.id, request.body, {

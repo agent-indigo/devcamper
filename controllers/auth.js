@@ -57,7 +57,7 @@ exports.getMe = AsyncHandler(async (request, response, next) => {
 })
 // @name    editUser
 // @desc    Edit user details
-// @route   PATCH /api/v1/auth/editUser
+// @route   PUT /api/v1/auth/editUser
 // @access  Private
 exports.editUser = AsyncHandler(async (request, response, next) => {
     const fieldsToUpdate = {
@@ -75,7 +75,7 @@ exports.editUser = AsyncHandler(async (request, response, next) => {
 })
 // @name    changePassword
 // @desc    Change password
-// @route   PATCH /api/v1/auth/changePassword
+// @route   PUT /api/v1/auth/changePassword
 // @access  Private
 exports.changePassword = AsyncHandler(async (request, response, next) => {
     const user = await User.findById(request.user.id).select('password')
@@ -121,7 +121,7 @@ exports.forgotPassword = AsyncHandler(async (request, response, next) => {
 })
 // @name    resetPassword
 // @desc    Reset password
-// @route   PATCH /api/v1/auth/resetPassword/:passwordResetToken
+// @route   PUT /api/v1/auth/resetPassword/:passwordResetToken
 // @access  Public
 exports.resetPassword = AsyncHandler(async (request, response, next) => {
     // get hashed token

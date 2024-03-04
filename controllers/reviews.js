@@ -51,7 +51,7 @@ exports.addReview = AsyncHandler(async (request, response, next) => {
 })
 // @name    editReview
 // @desc    Edit a review
-// @route   PATCH /api/v1/reviews/:id
+// @route   PUT /api/v1/reviews/:id
 // @access  Private
 exports.editReview = AsyncHandler(async (request, response, next) => {
     let review = await Review.findById(request.params.id)

@@ -22,6 +22,6 @@ router.use('/:bootcampId/reviews', reviewRouter)
 // methods
 router.route('/').get(AdvancedResults(Bootcamp, 'courses'), showBootcamps).post(protect, authorize('admin', 'publisher'), addBootcamp)
 // router.route('/radius/:zip/:distance').get(showBootcampsWihinRadius)
-router.route('/:id').get(showBootcamp).patch(protect, authorize('admin', 'publisher'), editBootcamp).delete(protect, authorize('admin', 'publisher'), deleteBootcamp)
+router.route('/:id').get(showBootcamp).put(protect, authorize('admin', 'publisher'), editBootcamp).delete(protect, authorize('admin', 'publisher'), deleteBootcamp)
 router.route('/:id/photo').put(protect, authorize('admin', 'publisher'), bootcampPhotoUpload)
 module.exports = router

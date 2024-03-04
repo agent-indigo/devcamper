@@ -12,5 +12,5 @@ const AdvancedResults = require('../middleware/AdvancedResults')
 const { protect, authorize } = require('../middleware/Auth')
 router.use(protect, authorize('admin'))
 router.route('/').get(AdvancedResults(User), showUsers).post(addUser)
-router.route('/:id').get(showUser).patch(editUser).delete(deleteUser)
+router.route('/:id').get(showUser).put(editUser).delete(deleteUser)
 module.exports = router

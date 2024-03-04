@@ -55,7 +55,7 @@ exports.addCourse = AsyncHandler(async(request, response, next) => {
 })
 // @name    editCourse
 // @desc    Edit a course
-// @route   PATCH /api/v1/courses/:id
+// @route   PUT /api/v1/courses/:id
 // @access  Private
 exports.editCourse = AsyncHandler(async(request, response, next) => {
     let course = await Course.findById(request.params.id)

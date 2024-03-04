@@ -74,7 +74,7 @@ exports.addBootcamp = AsyncHandler(async(request, response, next) => {
     })
 })
 // @name    Upload photo for bootcamp
-// @route   PATCH /api/v1/bootcamps/:id/photo
+// @route   PUT /api/v1/bootcamps/:id/photo
 // @acces   Private
 exports.bootcampPhotoUpload = AsyncHandler(async(request, response, next) => {
     const bootcamp = await Bootcamp.findById(request.params.id)
@@ -103,7 +103,7 @@ exports.bootcampPhotoUpload = AsyncHandler(async(request, response, next) => {
 })
 // @name    editBootcamp
 // @desc    Edit a bootcamp
-// @route   PATCH /api/v1/bootcamps/:id
+// @route   PUT /api/v1/bootcamps/:id
 // access   Private
 exports.editBootcamp = AsyncHandler(async(request, response, next) => {
     let bootcamp = await Bootcamp.findById(request.params.id)

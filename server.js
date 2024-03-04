@@ -5,7 +5,6 @@ const FileUpload = require('express-fileupload')
 const dotenv = require('dotenv')
 const morgan = require('morgan')
 const helmet = require ('helmet')
-const XSSclean = require('xss-clean')
 const HPPguard = require('hpp')
 const CORS = require('cors')
 const RateLimiter = require('express-rate-limit')
@@ -41,7 +40,7 @@ app.use(MongoSanitize())
 // set security headers
 app.use(helmet())
 // prevent XSS attacks
-app.use(XSSclean())
+app.use(helmet.xssFilter())
 // prevent HTTP pollution
 app.use(HPPguard())
 // set ten minute rate limit

@@ -14,5 +14,5 @@ router.route('/').get(AdvancedResults(Course, {
     path: 'bootcamp',
     select: 'name description'
 }), showCourses).post(protect, authorize('admin', 'publisher'), addCourse)
-router.route('/:id').get(showCourse).patch(protect, authorize('admin', 'publisher'), editCourse).delete(protect, authorize('admin', 'publisher'), deleteCourse)
+router.route('/:id').get(showCourse).put(protect, authorize('admin', 'publisher'), editCourse).delete(protect, authorize('admin', 'publisher'), deleteCourse)
 module.exports = router

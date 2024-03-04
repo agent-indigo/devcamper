@@ -16,5 +16,5 @@ router.route('/').get(AdvancedResults(Review, {
     }),
     showReviews
 ).post(protect, authorize('user', 'admin'), addReview)
-router.route('/:id').get(showReview).patch(protect, authorize('user', 'admin'), editReview).delete(protect, authorize('user', 'admin'), deleteReview)
+router.route('/:id').get(showReview).put(protect, authorize('user', 'admin'), editReview).delete(protect, authorize('user', 'admin'), deleteReview)
 module.exports = router
