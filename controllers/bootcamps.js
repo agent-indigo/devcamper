@@ -5,17 +5,21 @@ const ErrorResponse = require('../utilities/ErrorResponse')
 const path = require('path')
 // const GeoCoder = require('../utilities/GeoCoder')
 // methods
-// @name    showBootcamps
-// @desc    Show all forthcoming bootcamps
-// @route   GET /api/v1/bootcamps
-// @access  Public
+/**
+ * @name    showBootcamps
+ * @desc    Show all forthcoming bootcamps
+ * @route   GET /api/v1/bootcamps
+ * @access  public
+ */
 exports.showBootcamps = AsyncHandler(async(request, response, next) => {
     response.status(200).json(response.AdvancedResults)
 })
-// @name    showBootcampsWithinRadius
-// @desc    Show bootcamps within a radius
-// @route   GET /api/v1/bootcamps/:zip/:distance
-// @access  Private
+/**
+ * @name    showBootcampsWithinRadius
+ * @desc    Show bootcamps within a radius
+ * @route   GET /api/v1/bootcamps/:zip/:distance
+ * @access  private
+ */
 // exports.showBootcampsWihinRadius = AsyncHandler(async (request, response, next) => {
 //     const { zip, distance } = request.params
 //     // get coordinates
@@ -43,11 +47,13 @@ exports.showBootcamps = AsyncHandler(async(request, response, next) => {
 //         count: bootcamps.length,
 //         data: bootcamps
 //     })
-// })
-// @name    showBootcamp
-// @desc    Show a single bootcamp
-// @route   GET /api/v1/bootcamps/:id
-// access   Public
+// }
+/**
+ * @name    showBootcamp
+ * @desc    Show a single bootcamp
+ * @route   GET /api/v1/bootcamps/:id
+ * @access  public
+ */
 exports.showBootcamp = AsyncHandler(async(request, response, next) => {
     const bootcamp = await Bootcamp.findById(request.params.id)
     if(!bootcamp) return next(ErrorResponse(`Bootcamp with ID of ${request.params.id} not found.`, 404))
@@ -56,10 +62,12 @@ exports.showBootcamp = AsyncHandler(async(request, response, next) => {
         data: bootcamp
     })
 })
-// @name    addBootcamp
-// @desc    Add a bootcamp
-// @route   POST /api/v1/bootcamps
-// access   Private
+/**
+ * @name    addBootcamp
+ * @desc    Add a bootcamp
+ * @route   POST /api/v1/bootcamps
+ * @access  private
+ */
 exports.addBootcamp = AsyncHandler(async(request, response, next) => {
     // add user to body
     request.body.user = request.user.id
@@ -73,9 +81,12 @@ exports.addBootcamp = AsyncHandler(async(request, response, next) => {
         data: bootcamp
     })
 })
-// @name    Upload photo for bootcamp
-// @route   PUT /api/v1/bootcamps/:id/photo
-// @acces   Private
+/**
+ * @name    bootcampPhotoUpload
+ * @desc    Upload photo for bootcamp
+ * @route   PUT /api/v1/bootcamps/:id/photo
+ * @access  private
+ */
 exports.bootcampPhotoUpload = AsyncHandler(async(request, response, next) => {
     const bootcamp = await Bootcamp.findById(request.params.id)
     if(!bootcamp) return next(ErrorResponse(`Bootcamp with ID of ${request.params.id} not found`, 404))
@@ -101,10 +112,12 @@ exports.bootcampPhotoUpload = AsyncHandler(async(request, response, next) => {
         })
     })
 })
-// @name    editBootcamp
-// @desc    Edit a bootcamp
-// @route   PUT /api/v1/bootcamps/:id
-// access   Private
+/**
+ * @name    editBootcamp
+ * @desc    Edit a bootcamp
+ * @route   PUT /api/v1/bootcamps/:id
+ * @access  private
+ */
 exports.editBootcamp = AsyncHandler(async(request, response, next) => {
     let bootcamp = await Bootcamp.findById(request.params.id)
     if(!bootcamp) return next(ErrorResponse(`Bootcamp with ID of ${request.params.id} not found.`, 404))
@@ -119,10 +132,12 @@ exports.editBootcamp = AsyncHandler(async(request, response, next) => {
         data: bootcamp
     })
 })
-// @name    deleteBootcamp
-// @desc    Delete a bootcamp
-// @route   DELETE /api/v1/bootcamps/:id
-// @access  Private
+/**
+ * @name    deleteBootcamp
+ * @desc    Delete a bootcamp
+ * @route   DELETE /api/v1/bootcamps/:id
+ * @access  private
+ */
 exports.deleteBootcamp = AsyncHandler(async(request, response, next) => {
     const bootcamp = await Bootcamp.findById(request.params.id)
     if(!bootcamp) return next(ErrorResponse(`Bootcamp with ID of ${request.params.id} not found.`, 404))

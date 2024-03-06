@@ -4,11 +4,12 @@ const Bootcamp = require('../models/Bootcamp')
 const Course = require('../models/Course')
 const ErrorResponse = require('../utilities/ErrorResponse')
 // methods
-// @name    showCourses
-// @desc    Show all courses
-// @route   GET /api/v1/courses
-// @route   GET api/v1/bootcamps/:bootcampId/courses
-// @access  Public
+/**
+ * @name    showCourses
+ * @desc    Show all courses
+ * @routes  GET /api/v1/courses, GET api/v1/bootcamps/:bootcampId/courses
+ * @access  public
+ */
 exports.showCourses = AsyncHandler(async(request, response, next) => {
     if(request.params.bootcampId) {
         const courses = await Course.find({ bootcamp: request.params.bootcampId })
@@ -21,10 +22,12 @@ exports.showCourses = AsyncHandler(async(request, response, next) => {
         response.status(200).json(response.AdvancedResults)
     }
 })
-// @name    showCourse
-// @desc    Get a single course
-// @route   GET /api/v1/courses/:id
-// @access  Public
+/**
+ * @name    showCourse
+ * @desc    Get a single course
+ * @route   GET /api/v1/courses/:id
+ * @access  public
+ */
 exports.showCourse = AsyncHandler(async(request, response, next) => {
     const course = await Course.findById(request.params.id).populate({
         path: 'bootcamp',
@@ -36,10 +39,12 @@ exports.showCourse = AsyncHandler(async(request, response, next) => {
         data: course
     })
 })
-// @name    addCourse
-// @desc    Add a course
-// @route   POST /api/v1/bootcamps/:bootcampId/courses
-// @access  Private
+/**
+ * @name    addCourse
+ * @desc    Add a course
+ * @route   POST /api/v1/bootcamps/:bootcampId/courses
+ * @access  private
+ */
 exports.addCourse = AsyncHandler(async(request, response, next) => {
     request.body.bootcamp = request.params.bootcampId
     request.body.user = request.user.id
@@ -53,10 +58,12 @@ exports.addCourse = AsyncHandler(async(request, response, next) => {
         data: course
     })
 })
-// @name    editCourse
-// @desc    Edit a course
-// @route   PUT /api/v1/courses/:id
-// @access  Private
+/**
+ * @name    editCourse
+ * @desc    Edit a course
+ * @route   PUT /api/v1/courses/:id
+ * @access  private
+ */
 exports.editCourse = AsyncHandler(async(request, response, next) => {
     let course = await Course.findById(request.params.id)
     if(!course) return next(ErrorResponse(`Course with ID of ${request.params.id} not found.`, 404))
@@ -71,10 +78,12 @@ exports.editCourse = AsyncHandler(async(request, response, next) => {
         data: course
     })
 })
-// @name    deleteCourse
-// @desc    Delete a course
-// @route   DELETE /api/v1/courses/:id
-// @access  Private
+/**
+ * @name    deleteCourse
+ * @desc    Delete a course
+ * @route   DELETE /api/v1/courses/:id
+ * @access  private
+ */
 exports.deleteCourse = AsyncHandler(async(request, response, next) => {
     const course = await Course.findById(request.params.id)
     if(!course) return next(ErrorResponse(`Course with ID of ${request.params.id} not found.`, 404))

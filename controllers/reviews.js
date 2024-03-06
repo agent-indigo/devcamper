@@ -2,11 +2,12 @@ const AsyncHandler = require('../middleware/AsyncHandler')
 const Bootcamp = require('../models/Bootcamp')
 const ErrorResponse = require('../utilities/ErrorResponse')
 const Review = require('../models/Review')
-// @name    showReviews
-// @desc    Show all reviews
-// @route   GET /api/v1/reviews
-// @route   GET /api/v1/bootcamps/:bootcampId/reviews
-// @access  Public
+/**
+ * @name    showReviews
+ * @desc    Show all reviews
+ * @routes  GET /api/v1/reviews, GET /api/v1/bootcamps/:bootcampId/reviews
+ * @access  public
+ */
 exports.showReviews = AsyncHandler(async (request, response, next) => {
     if(request.params.bootcampId) {
         const reviews = await Review.find({ bootcamp: request.params.bootcampId })
@@ -19,10 +20,12 @@ exports.showReviews = AsyncHandler(async (request, response, next) => {
         response.status(200).json(response.AdvancedResults)
     }
 })
-// @name    showReview
-// @desc    Show a single review
-// @route   GET /api/v1/reviews/:id
-// @access  Public
+/**
+ * @name    showReview
+ * @desc    Show a single review
+ * @route   GET /api/v1/reviews/:id
+ * @access  public
+ */
 exports.showReview = AsyncHandler(async(request, response, next) => {
     const review = await Review.findById(request.params.id).populate({
         path: 'bootcamp',
@@ -34,10 +37,12 @@ exports.showReview = AsyncHandler(async(request, response, next) => {
         data: review
     })
 })
-// @name    addReview
-// @desc    Add a review
-// @route   POST /api/v1/bootcamps/:bootcampId/reviews
-// @access  Private
+/**
+ * @name    addReview
+ * @desc    Add a review
+ * @route   POST /api/v1/bootcamps/:bootcampId/reviews
+ * @access  private
+ */
 exports.addReview = AsyncHandler(async (request, response, next) => {
     request.body.bootcamp = request.params.bootcampId
     request.body.user = request.user.id
@@ -49,10 +54,12 @@ exports.addReview = AsyncHandler(async (request, response, next) => {
         data: review
     })
 })
-// @name    editReview
-// @desc    Edit a review
-// @route   PUT /api/v1/reviews/:id
-// @access  Private
+/**
+ * @name    editReview
+ * @desc    Edit a review
+ * @route   PUT /api/v1/reviews/:id
+ * @access  private
+ */
 exports.editReview = AsyncHandler(async (request, response, next) => {
     let review = await Review.findById(request.params.id)
     if(!review) return next(ErrorResponse(`Review with ID of ${request.params.id} not found.`, 404))
@@ -67,10 +74,12 @@ exports.editReview = AsyncHandler(async (request, response, next) => {
         data: review
     })
 })
-// @name    deleteReview
-// @desc    Delete a review
-// @route   DELETE /api/v1/reviews/:id
-// @access  Private
+/**
+ * @name    deleteReview
+ * @desc    Delete a review
+ * @route   DELETE /api/v1/reviews/:id
+ * @access  private
+ */
 exports.deleteReview = AsyncHandler(async (request, response, next) => {
     const review = await Review.findById(request.params.id)
     if(!review) return next(ErrorResponse(`Review with ID of ${request.params.id} not found.`, 404))
