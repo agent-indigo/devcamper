@@ -1,7 +1,8 @@
-const ErrorResponse = class ErrorResponse extends Error {
+class httpError extends Error {
     constructor(message, statusCode) {
         super(message)
         this.statusCode = statusCode
     }
 }
-module.exports = new ErrorResponse
+const errorMessage = new httpError()
+export default errorMessage

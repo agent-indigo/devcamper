@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const ReviewSchema = new mongoose.Schema({
+import {Schema, model} from 'mongoose'
+const reviewSchema = new Schema({
     title: {
         type: String,
         trim: true,
@@ -32,12 +32,12 @@ const ReviewSchema = new mongoose.Schema({
         ]
     },
     bootcamp: {
-        type: mongoose.Schema.ObjectId,
+        type: Schema.ObjectId,
         ref: 'Bootcamp',
         required: true
     },
     user: {
-        type: mongoose.Schema.ObjectId,
+        type: Schema.ObjectId,
         ref: 'User',
         required: true
     },
@@ -46,18 +46,16 @@ const ReviewSchema = new mongoose.Schema({
         default: Date.now
     }
 })
-// limit user to one review per bootcamp
-ReviewSchema.index({ bootcamp: 1, user: 1 }, { unique: true })
-// static method to get the average rating
-ReviewSchema.statics.getAverageRating = async function(bootcampId) {
+reviewSchema.index({ bootcamp: 1, user: 1 }, { unique: true })
+reviewSchema.statics.getAverageRating = async function(bootcampId) {
     const objectArray = await this.aggregate([
         {
-            $match: { bootcamp: bootcampId }
+            $match: {bootcamp: bootcampId}
         },
         {
             $group: {
                 _id: '$bootcamp',
-                averageRating: { $avg: '$rating' }
+                averageRating: {$avg: '$rating'}
             }
         }
     ])
@@ -69,12 +67,11 @@ ReviewSchema.statics.getAverageRating = async function(bootcampId) {
         console.error(error)
     }
 }
-// call getAverageRating after save
-ReviewSchema.post('save', function() {
+reviewSchema.post('save', function() {
     this.constructor.getAverageRating(this.bootcamp)
 })
-// call getAverageRating before remove
-ReviewSchema.pre('remove', function() {
+reviewSchema.pre('remove', function() {
     this.constructor.getAverageRating(this.bootcamp)
 })
-module.exports = mongoose.model('Review', ReviewSchema)
+const reviewModel = model('Review', reviewSchema)
+export default reviewModel

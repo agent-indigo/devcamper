@@ -1,6 +1,6 @@
-const nodemailer = require("nodemailer")
-const SendEmail = async options => {
-    const transporter = nodemailer.createTransport({
+import {createTransport} from "nodemailer"
+const sendEmail = async options => {
+    const transporter = createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
       auth: {
@@ -17,4 +17,4 @@ const SendEmail = async options => {
     const info = await transporter.sendMail(message)
     console.log(`Password reset email ${info.messageId} sent.`)
 }
-module.exports = SendEmail
+export default sendEmail

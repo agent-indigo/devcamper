@@ -1,7 +1,7 @@
-const mongoose = require('mongoose')
-const slugify = require('slugify')
-// const GeoCoder = require('../utilities/GeoCoder')
-const BootcampSchema = new mongoose.Schema({
+import {Schema, model} from 'mongoose'
+import slugify from 'slugify'
+import geoCoder from '../utilities/geoCoder.mjs'
+const bootcampSchema = new Schema({
     name: {
         type: String,
         required: [
@@ -22,7 +22,7 @@ const BootcampSchema = new mongoose.Schema({
     website: {
         type: String,
         match: [
-            /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+~#?&//=]*)/,
+            /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+~#?&//=]*)/,
             'Please enter a valid HTTP or HTTPS URL.'
         ]
     },
@@ -36,7 +36,7 @@ const BootcampSchema = new mongoose.Schema({
     email: {
         type: String,
         match: [
-            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
             'Please enter a valid email address.'
         ]
     },
@@ -48,15 +48,12 @@ const BootcampSchema = new mongoose.Schema({
         ]
     },
     location: {
-        //GeoJSON Point
         type: {
             type: String,
             enum: ['Point'],
-            // required: true
         },
         coordinates: {
             type: [Number],
-            // required: true,
             index: '2dsphere'
         },
         formattedAddress: String,
@@ -67,7 +64,6 @@ const BootcampSchema = new mongoose.Schema({
         country: String
     },
     careers: {
-        // arrary of strings
         type: [String],
         required: true,
         enum: [
@@ -116,48 +112,44 @@ const BootcampSchema = new mongoose.Schema({
         default: Date.now
     },
     user: {
-        type: mongoose.Schema.ObjectId,
+        type: Schema.ObjectId,
         ref: 'User',
         required: true
     }
 },{
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true }
+    toJSON: {virtuals: true},
+    toObject: {virtuals: true}
 })
-// create slug from name
-BootcampSchema.pre('save', function(next) {
+bootcampSchema.pre('save', function(next) {
     console.log('Slugify ran', this.name)
-    this.slug = slugify(this.name, { lower: true })
+    this.slug = slugify(this.name, {lower: true})
     next()
 })
-// delete courses associated to a deleted bootcamp
-BootcampSchema.pre('remove', async function(next) {
+bootcampSchema.pre('remove', async function(next) {
     console.log(`Courses being deleted from bootcamp ${this._id}.`)
-    await this.model('Course').deleteMany({ bootcamp: this._id })
+    await this.model('Course').deleteMany({bootcamp: this._id})
     next()
 })
-// reverse populate with virtuals
-BootcampSchema.virtual('courses', {
+bootcampSchema.virtual('courses', {
     ref: 'Course',
     localField: '_id',
     foreignField: 'bootcamp',
     justOne: false
 })
-// geocode & create location field
-// BootcampSchema.pre('save', async function(next) {
-//     const location = await GeoCoder.geocode(this.address)
-//     this.location = {
-//         type: 'Point',
-//         coordinates: [location[0].longitude, location[0].latitude],
-//         formattedAddress: location[0].formattedAddress,
-//         street: location[0].streetName,
-//         city: location[0].city,
-//         state: location[0].stateCode,
-//         zip: location[0].zipcode,
-//         country: location[0].countryCode
-//     }
-//     // don't save address
-//     this.address = undefined
-//     next()
-// })
-module.exports = mongoose.model('Bootcamp', BootcampSchema)
+bootcampSchema.pre('save', async function(next) {
+    const location = await geoCoder.geocode(this.address)
+    this.location = {
+        type: 'Point',
+        coordinates: [location[0].longitude, location[0].latitude],
+        formattedAddress: location[0].formattedAddress,
+        street: location[0].streetName,
+        city: location[0].city,
+        state: location[0].stateCode,
+        zip: location[0].zipcode,
+        country: location[0].countryCode
+    }
+    this.address = undefined
+    next()
+})
+const bootcampModel = model('Bootcamp', bootcampSchema)
+export default bootcampModel
