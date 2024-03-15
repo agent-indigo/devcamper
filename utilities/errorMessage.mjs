@@ -4,5 +4,7 @@ class httpError extends Error {
         this.statusCode = statusCode
     }
 }
-const errorMessage = new httpError()
+const errorMessage = (message, statusCode) => {
+    return new httpError(message, statusCode)
+}
 export default errorMessage

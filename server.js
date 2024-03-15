@@ -19,14 +19,8 @@ const PORT = process.env.PORT || 5000
 connectToMongoDB()
 const server = express()
 server.use(express.static(path.join(path.dirname, 'public/images')))
-server.use('/api/bootcamps', bootcampsRouter)
-server.use('/api/courses', coursesRouter)
-server.use('/api/reviews', reviewsRouter)
-server.use('/api/users', usersRouter)
 server.use(morgan())
 server.use(fileUpload)
-server.use(notFound)
-server.use(errorHandler)
 server.use(express.json())
 server.use(express.urlencoded({extended: true}))
 server.use(cookieParser())
@@ -38,5 +32,11 @@ server.use(rateLimit({
     windowMs: 10 * 60 * 1000,
     max: 100
 }))
+server.use('/api/bootcamps', bootcampsRouter)
+server.use('/api/courses', coursesRouter)
+server.use('/api/reviews', reviewsRouter)
+server.use('/api/users', usersRouter)
+server.use(notFound)
+server.use(errorHandler)
 server.listen(PORT, () => console.log(`Server running on localhost:${PORT} in ${MODE} mode.`))
 export default server

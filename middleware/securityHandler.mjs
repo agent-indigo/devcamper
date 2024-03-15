@@ -20,8 +20,8 @@ export const isLoggedIn = asyncHandler(async (request, response, next) => {
         throw new Error('Not authorized; no token.')
     }
 })
-export const isAdmin = (request, response, next) => {
-    isLoggedIn()
+export const isAdmin = async (request, response, next) => {
+    await isLoggedIn(request, response, next)
     if(request.user && request.user.isAdmin) {
         next()
     } else {
