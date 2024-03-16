@@ -20,7 +20,6 @@ export const isLoggedIn = asyncHandler(async (request, response, next) => {
     }
 })
 export const isAdmin = async (request, response, next) => {
-    await isLoggedIn(request, response, next)
     if(request.user && request.user.isAdmin) {
         next()
     } else {

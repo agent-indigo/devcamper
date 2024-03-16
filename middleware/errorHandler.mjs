@@ -15,7 +15,6 @@ export const errorHandler = (error, request, response, next) => {
         error.message = errorMessage(Object.values(error.errors).map(value => value.message), 400)
     }
     response.status(error.statusCode || 500).json({
-        success: false,
         error: error.message || '500 internal server error.',
         stack: MODE === 'production' ? null : error.stack
     })
