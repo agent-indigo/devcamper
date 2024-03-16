@@ -10,9 +10,14 @@ import searchFilter from '../middleware/searchFilter.mjs'
 import courseModel from '../models/courseModel.mjs'
 import {isLoggedIn, isAdmin} from '../middleware/securityHandler.mjs'
 const coursesRouter = Router({mergeParams: true})
-coursesRouter.route('/').get(searchFilter(courseModel, {
+coursesRouter.get('/', searchFilter(courseModel, {
     path: 'bootcamp',
     select: 'name description'
-}), showCourses).post(isLoggedIn, isAdmin('admin', 'publisher'), addCourse)
-coursesRouter.route('/:id').get(showCourse).put(isLoggedIn, isAdmin('admin', 'publisher'), editCourse).delete(isLoggedIn, isAdmin('admin', 'publisher'), deleteCourse)
+}), showCourses)
+coursesRouter.get('/:id', showCourse)
+coursesRouter.use(isLoggedIn)
+coursesRouter.use(isAdmin('admin', 'publisher'))
+coursesRouter.post('/', addCourse)
+coursesRouter.put('/:id', editCourse)
+coursesRouter.delete('/:id', deleteCourse)
 export default coursesRouter

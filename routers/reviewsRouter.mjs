@@ -10,11 +10,14 @@ import reviewModel from '../models/reviewModel,mjs'
 import searchFilter from '../middleware/searchFilter.mjs'
 import {isLoggedIn, isAdmin} from '../middleware/securityHandler.mjs'
 const reviewsRouter = Router({mergeParams: true})
-reviewsRouter.route('/').get(searchFilter(reviewModel, {
-        path: 'bootcamp',
-        select: 'name description'
-    }),
-    showReviews
-).post(isLoggedIn, isAdmin('user', 'admin'), addReview)
-reviewsRouter.route('/:id').get(showReview).put(isLoggedIn, isAdmin('user', 'admin'), editReview).delete(isLoggedIn, isAdmin('user', 'admin'), deleteReview)
+reviewsRouter.get('/', searchFilter(reviewModel, {
+    path: 'bootcamp',
+    select: 'name description'
+}), showReviews)
+reviewsRouter.get('/:id', showReview)
+reviewsRouter.use(isLoggedIn)
+reviewsRouter.use(isAdmin('user', 'admin'))
+reviewsRouter.post('/', addReview)
+reviewsRouter.put('/:id', editReview)
+reviewsRouter.delete('/:id', deleteReview)
 export default reviewsRouter

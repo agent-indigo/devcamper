@@ -3,27 +3,25 @@ import jwt from 'jsonwebtoken'
 import asyncHandler from './asyncHandler.mjs'
 import userModel from '../models/userModel.mjs'
 export const isLoggedIn = asyncHandler(async (request, response, next) => {
-    const token = request.cookies.jwt
-    if(token) {
-        try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            request.user = await userModel.findById(decoded.userId).select('-password')
-            next()
-        } catch(error) {
-            console.error(error)
-            response.status(401)
-            throw new Error('Not authorized; token authentication failed.')
-        }
-    } else {
-        response.status(401)
-        throw new Error('Not authorized; no token.')
+    let token
+    if(request.headers.authorization && request.headers.authorization.startsWith('Bearer')) {
+        token = request.headers.authorization.split(' ')[1]
+    }
+    else if(request.cookies.token) {
+        token = request.cookies.token
+    }
+    if(!token) return next(ErrorResponse('Unauthorized.', 401))
+    try {
+        const decoded = jwt.verify(token, process.env.JSON_WEB_TOKEN_SECRET)
+        request.user = await userModel.findById(decoded.id)
+        next()
+    } catch(error) {
+        return next(ErrorResponse('Unauthorized.', 401))
     }
 })
-export const isAdmin = async (request, response, next) => {
-    if(request.user && request.user.isAdmin) {
+export const isAdmin = (...roles) => {
+    return (request, response, next) => {
+        if(!roles.includes(request.user.role)) return next(ErrorResponse('Unauthorized.', 403))
         next()
-    } else {
-        response.status(401)
-        throw new Error('You are not logged in as an administrator.')
     }
 }
