@@ -3,8 +3,7 @@ import jwt from 'jsonwebtoken'
 import asyncHandler from './asyncHandler.mjs'
 import userModel from '../models/userModel.mjs'
 export const isLoggedIn = asyncHandler(async (request, response, next) => {
-    let token
-    token = request.cookies.jwt
+    const token = request.cookies.jwt
     if(token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
